@@ -59,4 +59,14 @@ namespace lab4
 		{
 		}
 	};
+
+	class EndOfStreamException : public Exception
+	{
+	public:
+		explicit EndOfStreamException(const std::string& context = "")
+			: Exception("Достигнут конец потока" +
+				  (context.empty() ? "" : ", контекст=" + context))
+		{
+		}
+	};
 }

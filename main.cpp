@@ -1,62 +1,125 @@
+#include <cstddef>
 #include <iostream>
 
-#include "lazy_sequence.h"
+#include "write_only_stream.h"
+
+class TestWriteStream :
+    public lab4::WriteOnlyStream<int>
+{
+public:
+    std::size_t Write(const int&) override
+    {
+        this->EnsureOpen("TestWriteStream::Write");
+
+        std::size_t next_position =
+            this->GetNextPosition(
+                "TestWriteStream::Write"
+            );
+
+        this->SetPosition(next_position);
+
+        return next_position;
+    }
+};
 
 int main()
 {
-    int items[] = {10, 20, 30};
-
-    lab4::LazySequence<int> sequence(items, 3);
-
-    lab4::IEnumerator<int>* enumerator =
-        sequence.GetEnumerator();
-
-    lab4::Option<int> before =
-        enumerator->GetCurrent();
+    TestWriteStream stream;
 
     std::cout
-        << "Current exists before MoveNext: "
-        << before.HasValue()
+        << "Initially open: "
+        << stream.IsOpen()
         << '\n';
 
     std::cout
-        << "Materialized before iteration: "
-        << sequence.GetMaterializedCount()
+        << "Initial position: "
+        << stream.GetPosition()
         << '\n';
 
-    while (enumerator->MoveNext())
+    try
+    {
+        stream.Write(10);
+    }
+    catch (
+        const lab4::InvalidOperationException&
+            exception
+    )
     {
         std::cout
-            << "After MoveNext: "
-            << sequence.GetMaterializedCount()
-            << '\n';
-
-        lab4::Option<int> current =
-            enumerator->GetCurrent();
-
-        if (current.HasValue())
-        {
-            std::cout
-                << "Current: "
-                << current.GetValue()
-                << '\n';
-        }
-
-        std::cout
-            << "After GetCurrent: "
-            << sequence.GetMaterializedCount()
+            << exception.what()
             << '\n';
     }
 
-    lab4::Option<int> after =
-        enumerator->GetCurrent();
+    stream.Open();
 
     std::cout
-        << "Current exists after end: "
-        << after.HasValue()
+        << "After Open: "
+        << stream.IsOpen()
         << '\n';
 
-    delete enumerator;
+    std::cout
+        << "Write position: "
+        << stream.Write(10)
+        << '\n';
+
+    std::cout
+        << "Write position: "
+        << stream.Write(20)
+        << '\n';
+
+    std::cout
+        << "Current position: "
+        << stream.GetPosition()
+        << '\n';
+
+    try
+    {
+        stream.Open();
+    }
+    catch (
+        const lab4::InvalidOperationException&
+            exception
+    )
+    {
+        std::cout
+            << exception.what()
+            << '\n';
+    }
+
+    stream.Close();
+
+    std::cout
+        << "After Close: "
+        << stream.IsOpen()
+        << '\n';
+
+    std::cout
+        << "Position after Close: "
+        << stream.GetPosition()
+        << '\n';
+
+    try
+    {
+        stream.Close();
+    }
+    catch (
+        const lab4::InvalidOperationException&
+            exception
+    )
+    {
+        std::cout
+            << exception.what()
+            << '\n';
+    }
+
+    stream.Open();
+
+    std::cout
+        << "Position after reopening: "
+        << stream.GetPosition()
+        << '\n';
+
+    stream.Close();
 
     return 0;
 }

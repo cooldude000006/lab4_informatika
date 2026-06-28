@@ -21,6 +21,12 @@ add_executable(laba_4
         include/map_generator.h
         include/where_generator.h
         include/lazy_sequence_enumerator.h
+        include/stream.h
+        include/read_only_stream.h
+        include/write_only_stream.h
+        include/sequence_read_stream.h
+        include/lazy_sequence_read_stream.h
+        include/sequence_write_stream.h
 )
 
 target_include_directories(laba_4 PRIVATE
