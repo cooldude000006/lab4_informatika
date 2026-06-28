@@ -287,6 +287,42 @@ namespace lab4
             return materialized_items_.Get(index);
         }
 
+        LazySequence<T>* GetSubsequence(int start_index, int end_index)
+        {
+            ValidateIndex(start_index);
+            ValidateIndex(end_index);
+
+            if (start_index > end_index)
+            {
+                throw InvalidOperationException(
+                    "Начальный индекс подпоследовательности "
+                    "не может быть больше конечного индекса"
+                );
+            }
+
+            MutableArraySequence<T> extracted_items;
+
+            for (
+                int index = start_index;
+                ;
+                ++index
+            )
+            {
+                extracted_items.Append(
+                    Get(index)
+                );
+
+                if (index == end_index)
+                {
+                    break;
+                }
+            }
+
+            return new LazySequence<T>(
+                &extracted_items
+            );
+        }
+
         Cardinal GetLength() const
         {
             return length_;
