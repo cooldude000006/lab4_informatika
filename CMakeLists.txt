@@ -12,6 +12,7 @@ add_executable(laba_4
         src/cardinal.cpp
         include/igenerator.h
         include/arithmetic_progression_generator.h
+        include/lazy_sequence.h
 )
 
 target_include_directories(laba_4 PRIVATE
