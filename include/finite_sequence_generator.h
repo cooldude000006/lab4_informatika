@@ -16,20 +16,13 @@ namespace lab4
         int next_index_;
 
     public:
-        FiniteSequenceGenerator(
-            T* items,
-            int count
-        )
-            : items_(items, count),
-              next_index_(0)
+        FiniteSequenceGenerator(T* items, int count)
+            : items_(items, count), next_index_(0)
         {
         }
 
-        explicit FiniteSequenceGenerator(
-            const Sequence<T>& sequence
-        )
-            : items_(),
-              next_index_(0)
+        explicit FiniteSequenceGenerator( const Sequence<T>& sequence)
+            : items_(), next_index_(0)
         {
             for (
                 int index = 0;
@@ -37,9 +30,7 @@ namespace lab4
                 ++index
             )
             {
-                items_.Append(
-                    sequence.Get(index)
-                );
+                items_.Append(sequence.Get(index));
             }
         }
 

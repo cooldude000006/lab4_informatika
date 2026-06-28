@@ -13,12 +13,8 @@ namespace lab4
         T step_;
 
     public:
-        ArithmeticProgressionGenerator(
-            const T& first,
-            const T& step
-        )
-            : next_value_(first),
-              step_(step)
+        ArithmeticProgressionGenerator(const T& first, const T& step)
+            : next_value_(first), step_(step)
         {
         }
 
