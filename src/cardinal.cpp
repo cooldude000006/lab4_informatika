@@ -5,14 +5,12 @@
 namespace lab4
 {
     Cardinal::Cardinal()
-        : is_infinite_(false),
-          value_(0)
+        : is_infinite_(false), value_(0)
     {
     }
 
     Cardinal::Cardinal(std::size_t value)
-        : is_infinite_(false),
-          value_(value)
+        : is_infinite_(false), value_(value)
     {
     }
 
@@ -34,9 +32,7 @@ namespace lab4
     {
         if (is_infinite_)
         {
-            throw InvalidOperationException(
-                "Невозможно получить конечное значение бесконечного Cardinal"
-            );
+            throw InvalidOperationException("Невозможно получить конечное значение бесконечного Cardinal");
         }
 
         return value_;
