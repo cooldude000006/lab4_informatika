@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <limits>
 
+#include "ienumerable.h"
+#include "lazy_sequence_enumerator.h"
 #include "map_generator.h"
 #include "where_generator.h"
 #include "concat_generator.h"
@@ -19,11 +21,11 @@
 namespace lab4
 {
     template<class T>
-    class LazySequence
+    class LazySequence : public IEnumerable<T>
     {
     private:
-        MutableArraySequence<T> materialized_items_;
-        IGenerator<T>* generator_;
+        mutable MutableArraySequence<T> materialized_items_;
+        mutable IGenerator<T>* generator_;
         Cardinal length_;
 
         void ValidateIndex(int index) const
@@ -48,12 +50,11 @@ namespace lab4
             }
         }
 
-        void MaterializeUntil(int index)
+        void MaterializeUntil(int index) const
         {
             while (materialized_items_.GetLength() <= index)
             {
-                if (generator_ == nullptr || !generator_->HasNext()
-                )
+                if (generator_ == nullptr || !generator_->HasNext())
                 {
                     throw InvalidOperationException(
                         "Генератор завершился раньше объявленной длины последовательности");
@@ -231,13 +232,13 @@ namespace lab4
             return *this;
         }
 
-        ~LazySequence()
+        ~LazySequence() override
         {
             delete generator_;
             generator_ = nullptr;
         }
 
-        T GetFirst()
+        T GetFirst() const
         {
             if (!length_.IsInfinite() && length_.GetValue() == 0)
             {
@@ -247,7 +248,7 @@ namespace lab4
             return Get(0);
         }
 
-        T GetLast()
+        T GetLast() const
         {
             if (length_.IsInfinite())
             {
@@ -276,7 +277,7 @@ namespace lab4
             return Get(static_cast<int>(last_index));
         }
 
-        T Get(int index)
+        T Get(int index) const
         {
             ValidateIndex(index);
             MaterializeUntil(index);
@@ -442,6 +443,11 @@ namespace lab4
                 );
             }
             return accumulator;
+        }
+
+        IEnumerator<T>* GetEnumerator() const override
+        {
+            return new LazySequenceEnumerator<T>(this);
         }
 
         Cardinal GetLength() const

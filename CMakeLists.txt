@@ -20,6 +20,7 @@ add_executable(laba_4
         include/concat_generator.h
         include/map_generator.h
         include/where_generator.h
+        include/lazy_sequence_enumerator.h
 )
 
 target_include_directories(laba_4 PRIVATE

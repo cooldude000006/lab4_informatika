@@ -2,61 +2,61 @@
 
 #include "lazy_sequence.h"
 
-void PrintFiniteSequence(
-    const char* name,
-    lab4::LazySequence<int>* sequence
-)
-{
-    std::cout << name << ": ";
-
-    std::size_t length =
-        sequence->GetLength().GetValue();
-
-    for (
-        std::size_t index = 0;
-        index < length;
-        ++index
-    )
-    {
-        std::cout
-            << sequence->Get(
-                   static_cast<int>(index)
-               )
-            << ' ';
-    }
-
-    std::cout << '\n';
-}
-
 int main()
 {
-    int first_items[] = {10, 20, 30};
-    int second_items[] = {40, 50};
+    int items[] = {10, 20, 30};
 
-    lab4::LazySequence<int> first(first_items, 3);
-    lab4::LazySequence<int> second(second_items, 2);
+    lab4::LazySequence<int> sequence(items, 3);
 
-    lab4::LazySequence<int>* result =
-        first.Concat(&second);
+    lab4::IEnumerator<int>* enumerator =
+        sequence.GetEnumerator();
+
+    lab4::Option<int> before =
+        enumerator->GetCurrent();
 
     std::cout
-        << "First materialized: "
-        << first.GetMaterializedCount()
+        << "Current exists before MoveNext: "
+        << before.HasValue()
         << '\n';
 
     std::cout
-        << "Second materialized: "
-        << second.GetMaterializedCount()
+        << "Materialized before iteration: "
+        << sequence.GetMaterializedCount()
         << '\n';
+
+    while (enumerator->MoveNext())
+    {
+        std::cout
+            << "After MoveNext: "
+            << sequence.GetMaterializedCount()
+            << '\n';
+
+        lab4::Option<int> current =
+            enumerator->GetCurrent();
+
+        if (current.HasValue())
+        {
+            std::cout
+                << "Current: "
+                << current.GetValue()
+                << '\n';
+        }
+
+        std::cout
+            << "After GetCurrent: "
+            << sequence.GetMaterializedCount()
+            << '\n';
+    }
+
+    lab4::Option<int> after =
+        enumerator->GetCurrent();
 
     std::cout
-        << "Result materialized: "
-        << result->GetMaterializedCount()
+        << "Current exists after end: "
+        << after.HasValue()
         << '\n';
 
-    PrintFiniteSequence("Result", result);
-
-    delete result;
+    delete enumerator;
 
     return 0;
 }
