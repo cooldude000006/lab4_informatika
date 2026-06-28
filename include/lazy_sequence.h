@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <limits>
 
+#include "map_generator.h"
+#include "where_generator.h"
 #include "concat_generator.h"
 #include "subsequence_generator.h"
 #include "insertion_generator.h"
@@ -105,6 +107,30 @@ namespace lab4
                 );
             }
             return Cardinal(first_length + second_length);
+        }
+
+        template<class TPredicate>std::size_t CountMatchingItems(const TPredicate& predicate) const
+        {
+            ReplayGenerator<T> source = CreateReplayGenerator();
+            std::size_t count = 0;
+
+            while (source.HasNext())
+            {
+                T item = source.GetNext();
+
+                if (predicate(item))
+                {
+                    if (
+                        count ==
+                        std::numeric_limits<std::size_t>::max()
+                    )
+                    {
+                        throw InvalidOperationException("Переполнение количества элементов Where");
+                    }
+                    ++count;
+                }
+            }
+            return count;
         }
 
     public:
@@ -353,6 +379,69 @@ namespace lab4
                 generator,
                 GetLengthAfterConcat(other->GetLength())
             );
+        }
+
+        template<class TResult, class TMapper>
+        LazySequence<TResult>* Map(const TMapper& mapper) const
+        {
+            ReplayGenerator<T> source = CreateReplayGenerator();
+
+            MapGenerator<T, TResult, TMapper> generator(
+                source,
+                mapper
+            );
+
+            return new LazySequence<TResult>(
+                generator,
+                length_
+            );
+        }
+
+        template<class TPredicate>
+        LazySequence<T>* Where(const TPredicate& predicate) const
+        {
+            Cardinal result_length = Cardinal::Infinity();
+
+            if (!length_.IsInfinite())
+            {
+                result_length = Cardinal(
+                    CountMatchingItems(predicate)
+                );
+            }
+
+            ReplayGenerator<T> source = CreateReplayGenerator();
+
+            WhereGenerator<T, TPredicate> generator(
+                source,
+                predicate
+            );
+
+            return new LazySequence<T>(
+                generator,
+                result_length
+            );
+        }
+
+        template<class TAccumulator, class TOperation>
+        TAccumulator Reduce(const TOperation& operation, TAccumulator initial) const
+        {
+            if (length_.IsInfinite())
+            {
+                throw InvalidOperationException(
+                    "Невозможно полностью свернуть бесконечную последовательность");
+            }
+
+            ReplayGenerator<T> source = CreateReplayGenerator();
+            TAccumulator accumulator = initial;
+
+            while (source.HasNext())
+            {
+                accumulator = operation(
+                    source.GetNext(),
+                    accumulator
+                );
+            }
+            return accumulator;
         }
 
         Cardinal GetLength() const
