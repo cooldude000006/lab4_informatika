@@ -1,46 +1,35 @@
 #include <iostream>
 
-#include "cardinal.h"
-#include "mutable_array_sequence.h"
+#include "arithmetic_progression_generator.h"
 
 int main()
 {
-    lab4::MutableArraySequence<int> sequence;
-
-    sequence.Append(10);
-    sequence.Append(20);
-    sequence.Append(30);
-
-    lab4::Cardinal finiteLength(
-        static_cast<std::size_t>(sequence.GetLength())
+    lab4::ArithmeticProgressionGenerator<int> generator(
+        2,
+        3
     );
 
-    lab4::Cardinal infiniteLength =
-        lab4::Cardinal::Infinity();
+    std::cout << "Progression: ";
 
-    std::cout
-        << "Sequence length: "
-        << finiteLength.GetValue()
-        << '\n';
-
-    std::cout
-        << "Finite cardinal is infinite: "
-        << finiteLength.IsInfinite()
-        << '\n';
-
-    std::cout
-        << "Infinite cardinal is infinite: "
-        << infiniteLength.IsInfinite()
-        << '\n';
-    try
-    {
-        infiniteLength.GetValue();
-    }
-    catch (const lab4::InvalidOperationException& exception)
+    for (int i = 0; i < 5; ++i)
     {
         std::cout
-            << exception.what()
+            << generator.GetNext()
+            << ' ';
+    }
+
+    std::cout << '\n';
+
+    lab4::Option<int> next =
+        generator.TryGetNext();
+
+    if (next.HasValue())
+    {
+        std::cout
+            << "Next value: "
+            << next.GetValue()
             << '\n';
     }
+
     return 0;
 }

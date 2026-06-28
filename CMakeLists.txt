@@ -10,6 +10,8 @@ add_executable(laba_4
         main.cpp
         include/cardinal.h
         src/cardinal.cpp
+        include/igenerator.h
+        include/arithmetic_progression_generator.h
 )
 
 target_include_directories(laba_4 PRIVATE
