@@ -10,6 +10,10 @@ add_executable(laba_4
         main.cpp
 )
 
+target_include_directories(laba_4 PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 if (MSVC)
     target_compile_options(laba_4 PRIVATE
             /W4
