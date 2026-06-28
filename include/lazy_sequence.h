@@ -1,11 +1,14 @@
 #pragma once
 
 #include <cstddef>
+#include <limits>
 
 #include "cardinal.h"
 #include "exceptions.h"
+#include "finite_sequence_generator.h"
 #include "igenerator.h"
 #include "mutable_array_sequence.h"
+#include "sequence.h"
 
 namespace lab4
 {
@@ -30,7 +33,8 @@ namespace lab4
 
             if (
                 !length_.IsInfinite() &&
-                static_cast<std::size_t>(index) >= length_.GetValue()
+                static_cast<std::size_t>(index) >=
+                    length_.GetValue()
             )
             {
                 throw IndexOutOfRangeException(
@@ -43,7 +47,9 @@ namespace lab4
 
         void MaterializeUntil(int index)
         {
-            while (materialized_items_.GetLength() <= index)
+            while (
+                materialized_items_.GetLength() <= index
+            )
             {
                 if (
                     generator_ == nullptr ||
@@ -51,7 +57,8 @@ namespace lab4
                 )
                 {
                     throw InvalidOperationException(
-                        "Генератор завершился раньше объявленной длины последовательности"
+                        "Генератор завершился раньше "
+                        "объявленной длины последовательности"
                     );
                 }
 
@@ -70,7 +77,7 @@ namespace lab4
         {
         }
 
-        // Создать последовательность с заданным генератором и длиной.
+        // Создать последовательность по генератору.
         LazySequence(
             const IGenerator<T>& generator,
             const Cardinal& length
@@ -81,9 +88,87 @@ namespace lab4
         {
         }
 
-        // Глубокое копирование последовательности.
-        LazySequence(const LazySequence<T>& other)
-            : materialized_items_(other.materialized_items_),
+        // Скопировать элементы переданного массива.
+        LazySequence(
+            T* items,
+            int count
+        )
+            : materialized_items_(),
+              generator_(nullptr),
+              length_(0)
+        {
+            if (count < 0)
+            {
+                throw InvalidOperationException(
+                    "Количество элементов "
+                    "не может быть отрицательным"
+                );
+            }
+
+            if (items == nullptr && count > 0)
+            {
+                throw InvalidOperationException(
+                    "Указатель items равен nullptr "
+                    "при положительном количестве элементов"
+                );
+            }
+
+            generator_ =
+                new FiniteSequenceGenerator<T>(
+                    items,
+                    count
+                );
+
+            length_ = Cardinal(
+                static_cast<std::size_t>(count)
+            );
+        }
+
+        // Скопировать элементы обычной последовательности.
+        explicit LazySequence(
+            const Sequence<T>* sequence
+        )
+            : materialized_items_(),
+              generator_(nullptr),
+              length_(0)
+        {
+            if (sequence == nullptr)
+            {
+                throw InvalidOperationException(
+                    "Невозможно создать LazySequence "
+                    "из nullptr"
+                );
+            }
+
+            int sequence_length =
+                sequence->GetLength();
+
+            if (sequence_length < 0)
+            {
+                throw InvalidOperationException(
+                    "Длина исходной последовательности "
+                    "не может быть отрицательной"
+                );
+            }
+
+            generator_ =
+                new FiniteSequenceGenerator<T>(
+                    *sequence
+                );
+
+            length_ = Cardinal(
+                static_cast<std::size_t>(
+                    sequence_length
+                )
+            );
+        }
+
+        LazySequence(
+            const LazySequence<T>& other
+        )
+            : materialized_items_(
+                  other.materialized_items_
+              ),
               generator_(
                   other.generator_ == nullptr
                       ? nullptr
@@ -106,7 +191,8 @@ namespace lab4
 
             if (other.generator_ != nullptr)
             {
-                new_generator = other.generator_->Clone();
+                new_generator =
+                    other.generator_->Clone();
             }
 
             try
@@ -132,6 +218,65 @@ namespace lab4
         {
             delete generator_;
             generator_ = nullptr;
+        }
+
+        T GetFirst()
+        {
+            if (
+                !length_.IsInfinite() &&
+                length_.GetValue() == 0
+            )
+            {
+                throw IndexOutOfRangeException(
+                    0,
+                    0,
+                    "LazySequence::GetFirst"
+                );
+            }
+
+            return Get(0);
+        }
+
+        T GetLast()
+        {
+            if (length_.IsInfinite())
+            {
+                throw InvalidOperationException(
+                    "У бесконечной последовательности "
+                    "нет последнего элемента"
+                );
+            }
+
+            std::size_t length =
+                length_.GetValue();
+
+            if (length == 0)
+            {
+                throw IndexOutOfRangeException(
+                    0,
+                    0,
+                    "LazySequence::GetLast"
+                );
+            }
+
+            std::size_t last_index = length - 1;
+
+            if (
+                last_index >
+                static_cast<std::size_t>(
+                    std::numeric_limits<int>::max()
+                )
+            )
+            {
+                throw InvalidOperationException(
+                    "Индекс последнего элемента "
+                    "превышает поддерживаемый диапазон int"
+                );
+            }
+
+            return Get(
+                static_cast<int>(last_index)
+            );
         }
 
         T Get(int index)

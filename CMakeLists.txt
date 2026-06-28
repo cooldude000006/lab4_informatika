@@ -13,6 +13,7 @@ add_executable(laba_4
         include/igenerator.h
         include/arithmetic_progression_generator.h
         include/lazy_sequence.h
+        include/finite_sequence_generator.h
 )
 
 target_include_directories(laba_4 PRIVATE

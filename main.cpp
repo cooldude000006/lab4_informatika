@@ -1,44 +1,38 @@
 #include <iostream>
 
-#include "arithmetic_progression_generator.h"
-#include "lazy_sequence.h"
+#include "finite_sequence_generator.h"
 
 int main()
 {
-    lab4::ArithmeticProgressionGenerator<int> generator(
-        2,
+    int items[] = {10, 20, 30};
+
+    lab4::FiniteSequenceGenerator<int> generator(
+        items,
         3
     );
 
-    lab4::LazySequence<int> sequence(
-        generator,
-        lab4::Cardinal::Infinity()
-    );
+    while (generator.HasNext())
+    {
+        std::cout
+            << generator.GetNext()
+            << ' ';
+    }
 
-    std::cout
-        << "Materialized before Get: "
-        << sequence.GetMaterializedCount()
-        << '\n';
+    std::cout << '\n';
 
-    std::cout
-        << "Element 4: "
-        << sequence.Get(4)
-        << '\n';
-
-    std::cout
-        << "Materialized after Get(4): "
-        << sequence.GetMaterializedCount()
-        << '\n';
-
-    std::cout
-        << "Element 2: "
-        << sequence.Get(2)
-        << '\n';
-
-    std::cout
-        << "Materialized after repeated access: "
-        << sequence.GetMaterializedCount()
-        << '\n';
+    try
+    {
+        generator.GetNext();
+    }
+    catch (
+        const lab4::IndexOutOfRangeException&
+            exception
+    )
+    {
+        std::cout
+            << exception.what()
+            << '\n';
+    }
 
     return 0;
 }
