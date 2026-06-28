@@ -3,6 +3,10 @@
 #include <cstddef>
 #include <limits>
 
+#include "concat_generator.h"
+#include "subsequence_generator.h"
+#include "insertion_generator.h"
+#include "replay_generator.h"
 #include "cardinal.h"
 #include "exceptions.h"
 #include "finite_sequence_generator.h"
@@ -24,10 +28,7 @@ namespace lab4
         {
             if (index < 0)
             {
-                throw IndexOutOfRangeException(
-                    index,
-                    0,
-                    "LazySequence::Get"
+                throw IndexOutOfRangeException(index, 0, "LazySequence::Get"
                 );
             }
 
@@ -58,6 +59,52 @@ namespace lab4
 
                 materialized_items_.Append(generator_->GetNext());
             }
+        }
+
+        Cardinal GetLengthAfterInsertion() const
+        {
+            if (length_.IsInfinite())
+            {
+                return Cardinal::Infinity();
+            }
+
+            std::size_t length = length_.GetValue();
+
+            if (length == std::numeric_limits<std::size_t>::max())
+            {
+                throw InvalidOperationException(
+                    "Невозможно увеличить длину последовательности"
+                );
+            }
+            return Cardinal(length + 1);
+        }
+
+        ReplayGenerator<T> CreateReplayGenerator() const
+        {
+            return ReplayGenerator<T>(
+                materialized_items_,
+                generator_,
+                length_
+            );
+        }
+
+        Cardinal GetLengthAfterConcat(const Cardinal& other_length) const
+        {
+            if (length_.IsInfinite() || other_length.IsInfinite())
+            {
+                return Cardinal::Infinity();
+            }
+
+            std::size_t first_length = length_.GetValue();
+            std::size_t second_length = other_length.GetValue();
+
+            if (first_length > std::numeric_limits<std::size_t>::max() - second_length)
+            {
+                throw InvalidOperationException(
+                    "Переполнение длины при сцеплении ленивых последовательностей"
+                );
+            }
+            return Cardinal(first_length + second_length);
         }
 
     public:
@@ -211,7 +258,7 @@ namespace lab4
             return materialized_items_.Get(index);
         }
 
-        LazySequence<T>* GetSubsequence(int start_index, int end_index)
+        LazySequence<T>* GetSubsequence(int start_index, int end_index) const
         {
             ValidateIndex(start_index);
             ValidateIndex(end_index);
@@ -222,19 +269,90 @@ namespace lab4
                     "Начальный индекс подпоследовательности не может быть больше конечного индекса");
             }
 
-            MutableArraySequence<T> extracted_items;
+            std::size_t count =
+                static_cast<std::size_t>(
+                    end_index - start_index
+                ) + 1;
 
-            for (int index = start_index; ; ++index)
+            ReplayGenerator<T> source =
+                CreateReplayGenerator();
+
+            SubsequenceGenerator<T> generator(
+                source,
+                static_cast<std::size_t>(start_index),
+                count
+            );
+
+            return new LazySequence<T>(
+                generator,
+                Cardinal(count)
+            );
+        }
+
+        LazySequence<T>* Prepend(const T& item) const
+        {
+            ReplayGenerator<T> source = CreateReplayGenerator();
+            InsertionGenerator<T> generator(source, item, 0);
+
+            return new LazySequence<T>(generator, GetLengthAfterInsertion());
+        }
+
+        LazySequence<T>* InsertAt(const T& item, int index) const
+        {
+            ValidateIndex(index);
+
+            ReplayGenerator<T> source = CreateReplayGenerator();
+
+            InsertionGenerator<T> generator(
+                source,
+                item,
+                static_cast<std::size_t>(index)
+            );
+
+            return new LazySequence<T>(generator, GetLengthAfterInsertion());
+        }
+
+        LazySequence<T>* Append(const T& item) const
+        {
+            if (length_.IsInfinite())
             {
-                extracted_items.Append(Get(index));
-
-                if (index == end_index)
-                {
-                    break;
-                }
+                return new LazySequence<T>(*this);
             }
 
-            return new LazySequence<T>(&extracted_items);
+            std::size_t insertion_index = length_.GetValue();
+
+            ReplayGenerator<T> source = CreateReplayGenerator();
+
+            InsertionGenerator<T> generator(
+                source,
+                item,
+                insertion_index
+            );
+
+            return new LazySequence<T>(generator, GetLengthAfterInsertion());
+        }
+
+        LazySequence<T>* Concat(const LazySequence<T>* other) const
+        {
+            if (other == nullptr)
+            {
+                throw InvalidOperationException(
+                    "Невозможно объединить LazySequence с nullptr"
+                );
+            }
+
+            ReplayGenerator<T> first =
+                CreateReplayGenerator();
+
+            ReplayGenerator<T> second =
+                other->CreateReplayGenerator();
+
+            ConcatGenerator<T> generator(first, second);
+
+            return new LazySequence<T>(
+                generator,
+                GetLengthAfterConcat(other->GetLength())
+            );
         }
 
         Cardinal GetLength() const

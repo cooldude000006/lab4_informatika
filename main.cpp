@@ -2,65 +2,61 @@
 
 #include "lazy_sequence.h"
 
+void PrintFiniteSequence(
+    const char* name,
+    lab4::LazySequence<int>* sequence
+)
+{
+    std::cout << name << ": ";
+
+    std::size_t length =
+        sequence->GetLength().GetValue();
+
+    for (
+        std::size_t index = 0;
+        index < length;
+        ++index
+    )
+    {
+        std::cout
+            << sequence->Get(
+                   static_cast<int>(index)
+               )
+            << ' ';
+    }
+
+    std::cout << '\n';
+}
+
 int main()
 {
-    int items[] =
-    {
-        10,
-        20,
-        30,
-        40,
-        50
-    };
+    int first_items[] = {10, 20, 30};
+    int second_items[] = {40, 50};
 
-    lab4::LazySequence<int> sequence(
-        items,
-        5
-    );
+    lab4::LazySequence<int> first(first_items, 3);
+    lab4::LazySequence<int> second(second_items, 2);
+
+    lab4::LazySequence<int>* result =
+        first.Concat(&second);
 
     std::cout
-        << "Source materialized before: "
-        << sequence.GetMaterializedCount()
-        << '\n';
-
-    lab4::LazySequence<int>* subsequence =
-        sequence.GetSubsequence(
-            1,
-            3
-        );
-
-    std::cout
-        << "Source materialized after: "
-        << sequence.GetMaterializedCount()
+        << "First materialized: "
+        << first.GetMaterializedCount()
         << '\n';
 
     std::cout
-        << "Subsequence length: "
-        << subsequence
-            ->GetLength()
-            .GetValue()
+        << "Second materialized: "
+        << second.GetMaterializedCount()
         << '\n';
 
     std::cout
-        << "Subsequence materialized before access: "
-        << subsequence->GetMaterializedCount()
+        << "Result materialized: "
+        << result->GetMaterializedCount()
         << '\n';
 
-    std::cout
-        << "Subsequence elements: "
-        << subsequence->Get(0)
-        << ' '
-        << subsequence->Get(1)
-        << ' '
-        << subsequence->Get(2)
-        << '\n';
+    PrintFiniteSequence("Result", result);
 
-    std::cout
-        << "Subsequence materialized after access: "
-        << subsequence->GetMaterializedCount()
-        << '\n';
-
-    delete subsequence;
+    delete result;
 
     return 0;
 }

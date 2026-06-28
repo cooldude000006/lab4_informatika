@@ -14,6 +14,10 @@ add_executable(laba_4
         include/arithmetic_progression_generator.h
         include/lazy_sequence.h
         include/finite_sequence_generator.h
+        include/replay_generator.h
+        include/insertion_generator.h
+        include/subsequence_generator.h
+        include/concat_generator.h
 )
 
 target_include_directories(laba_4 PRIVATE
