@@ -8,6 +8,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(laba_4
         main.cpp
+        include/cardinal.h
+        src/cardinal.cpp
 )
 
 target_include_directories(laba_4 PRIVATE
