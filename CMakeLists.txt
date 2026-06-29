@@ -1,48 +1,98 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.14)
 
-project(laba_4 VERSION 1.0 LANGUAGES CXX)
+project(laba_4 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(laba_4
-        main.cpp
-        include/cardinal.h
+
+function(enable_strict_warnings target_name)
+    if (MSVC)
+        target_compile_options(${target_name} PRIVATE
+                /W4
+                /WX
+                /utf-8
+        )
+    else()
+        target_compile_options(${target_name} PRIVATE
+                -Wall
+                -Wextra
+                -Wpedantic
+                -Werror
+                -finput-charset=UTF-8
+                -fexec-charset=UTF-8
+        )
+    endif()
+endfunction()
+
+
+# Основная логика проекта без пользовательского интерфейса.
+add_library(laba4_core STATIC
         src/cardinal.cpp
-        include/igenerator.h
-        include/arithmetic_progression_generator.h
-        include/lazy_sequence.h
-        include/finite_sequence_generator.h
-        include/replay_generator.h
-        include/insertion_generator.h
-        include/subsequence_generator.h
-        include/concat_generator.h
-        include/map_generator.h
-        include/where_generator.h
-        include/lazy_sequence_enumerator.h
-        include/stream.h
-        include/read_only_stream.h
-        include/write_only_stream.h
-        include/sequence_read_stream.h
-        include/lazy_sequence_read_stream.h
-        include/sequence_write_stream.h
+        src/online_statistics.cpp
 )
 
-target_include_directories(laba_4 PRIVATE
+target_include_directories(laba4_core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+enable_strict_warnings(laba4_core)
+
+
+# Консольное приложение.
+add_executable(laba_4
+        main.cpp
+        src/console_interface.cpp
+)
+
+target_link_libraries(laba_4 PRIVATE
+        laba4_core
+)
+
+enable_strict_warnings(laba_4)
+
+
+# Подключение GoogleTest.
+include(FetchContent)
+
 if (MSVC)
-    target_compile_options(laba_4 PRIVATE
-            /W4
-            /WX
-    )
-else()
-    target_compile_options(laba_4 PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
-            -Werror
-    )
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 endif()
+
+FetchContent_Declare(
+        googletest
+        URL
+        https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+
+# Автоматические тесты.
+add_executable(laba_4_tests
+        tests/cardinal_tests.cpp
+        tests/generator_tests.cpp
+        tests/online_statistics_tests.cpp
+        tests/cardinal_tests.cpp
+        tests/cardinal_tests.cpp
+        tests/generator_tests.cpp
+        tests/online_statistics_tests.cpp
+        tests/lazy_sequence_basic_tests.cpp
+        tests/lazy_sequence_operations_tests.cpp
+        tests/stream_tests.cpp
+)
+
+target_link_libraries(laba_4_tests PRIVATE
+        laba4_core
+        GTest::gtest_main
+)
+
+enable_strict_warnings(laba_4_tests)
+
+include(GoogleTest)
+
+gtest_discover_tests(laba_4_tests)
