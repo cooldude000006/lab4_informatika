@@ -1,9 +1,9 @@
 #pragma once
 
-#include "exceptions.h"
-#include "igenerator.h"
-#include "mutable_array_sequence.h"
-#include "sequence.h"
+#include "../../exceptions.h"
+#include "../igenerator.h"
+#include "../../sequence/mutable_array_sequence.h"
+#include "../../sequence/sequence.h"
 
 namespace lab4
 {

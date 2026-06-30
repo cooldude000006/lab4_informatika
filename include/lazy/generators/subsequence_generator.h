@@ -2,8 +2,8 @@
 
 #include <cstddef>
 
-#include "exceptions.h"
-#include "igenerator.h"
+#include "../../exceptions.h"
+#include "../igenerator.h"
 
 namespace lab4
 {

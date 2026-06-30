@@ -2,10 +2,10 @@
 
 #include <cstddef>
 
-#include "cardinal.h"
-#include "exceptions.h"
-#include "igenerator.h"
-#include "mutable_array_sequence.h"
+#include "../../cardinal.h"
+#include "../../exceptions.h"
+#include "../igenerator.h"
+#include "../../sequence/mutable_array_sequence.h"
 
 namespace lab4
 {

@@ -27,7 +27,6 @@ function(enable_strict_warnings target_name)
 endfunction()
 
 
-# Основная логика проекта без пользовательского интерфейса.
 add_library(laba4_core STATIC
         src/cardinal.cpp
         src/online_statistics.cpp
@@ -40,7 +39,6 @@ target_include_directories(laba4_core PUBLIC
 enable_strict_warnings(laba4_core)
 
 
-# Консольное приложение.
 add_executable(laba_4
         main.cpp
         src/console_interface.cpp
@@ -53,7 +51,6 @@ target_link_libraries(laba_4 PRIVATE
 enable_strict_warnings(laba_4)
 
 
-# Подключение GoogleTest.
 include(FetchContent)
 
 if (MSVC)
@@ -72,12 +69,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 
-# Автоматические тесты.
 add_executable(laba_4_tests
-        tests/cardinal_tests.cpp
-        tests/generator_tests.cpp
-        tests/online_statistics_tests.cpp
-        tests/cardinal_tests.cpp
         tests/cardinal_tests.cpp
         tests/generator_tests.cpp
         tests/online_statistics_tests.cpp

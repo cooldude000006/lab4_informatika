@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <string>
 
-#include "read_only_stream.h"
+#include "stream/read_only_stream.h"
 
 namespace lab4
 {

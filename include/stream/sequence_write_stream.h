@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include "mutable_array_sequence.h"
+#include "../sequence/mutable_array_sequence.h"
 #include "write_only_stream.h"
 
 namespace lab4

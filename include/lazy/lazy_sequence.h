@@ -3,20 +3,20 @@
 #include <cstddef>
 #include <limits>
 
-#include "ienumerable.h"
+#include "../sequence/ienumerable.h"
 #include "lazy_sequence_enumerator.h"
-#include "map_generator.h"
-#include "where_generator.h"
-#include "concat_generator.h"
-#include "subsequence_generator.h"
-#include "insertion_generator.h"
-#include "replay_generator.h"
-#include "cardinal.h"
-#include "exceptions.h"
-#include "finite_sequence_generator.h"
+#include "generators/map_generator.h"
+#include "generators/where_generator.h"
+#include "generators/concat_generator.h"
+#include "generators/subsequence_generator.h"
+#include "generators/insertion_generator.h"
+#include "generators/replay_generator.h"
+#include "../cardinal.h"
+#include "../exceptions.h"
+#include "generators/finite_sequence_generator.h"
 #include "igenerator.h"
-#include "mutable_array_sequence.h"
-#include "sequence.h"
+#include "../sequence/mutable_array_sequence.h"
+#include "../sequence/sequence.h"
 
 namespace lab4
 {

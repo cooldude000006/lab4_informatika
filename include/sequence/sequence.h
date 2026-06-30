@@ -1,6 +1,6 @@
 #pragma  once
 
-#include "exceptions.h"
+#include "../exceptions.h"
 #include "ienumerable.h"
 #include "icollection.h"
 namespace lab4 {

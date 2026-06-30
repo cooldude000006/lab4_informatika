@@ -3,10 +3,10 @@
 
 #include <gtest/gtest.h>
 
-#include "arithmetic_progression_generator.h"
+#include "../include/lazy/generators/arithmetic_progression_generator.h"
 #include "exceptions.h"
-#include "ienumerator.h"
-#include "lazy_sequence.h"
+#include "../include/sequence/ienumerator.h"
+#include "../include/lazy/lazy_sequence.h"
 #include "option.h"
 
 // Проверяет параметры пустой ленивой последовательности

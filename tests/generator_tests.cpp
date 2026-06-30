@@ -2,10 +2,10 @@
 
 #include <gtest/gtest.h>
 
-#include "arithmetic_progression_generator.h"
+#include "../include/lazy/generators/arithmetic_progression_generator.h"
 #include "exceptions.h"
-#include "finite_sequence_generator.h"
-#include "igenerator.h"
+#include "../include/lazy/generators/finite_sequence_generator.h"
+#include "../include/lazy/igenerator.h"
 #include "option.h"
 
 // Проверяет генерацию элементов арифметической прогрессии

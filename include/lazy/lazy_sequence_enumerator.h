@@ -3,9 +3,9 @@
 #include <cstddef>
 #include <limits>
 
-#include "cardinal.h"
-#include "exceptions.h"
-#include "ienumerator.h"
+#include "../cardinal.h"
+#include "../exceptions.h"
+#include "../sequence/ienumerator.h"
 
 namespace lab4
 {

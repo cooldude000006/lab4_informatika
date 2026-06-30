@@ -4,13 +4,13 @@
 
 #include <gtest/gtest.h>
 
-#include "arithmetic_progression_generator.h"
+#include "../include/lazy/generators/arithmetic_progression_generator.h"
 #include "exceptions.h"
-#include "lazy_sequence.h"
-#include "lazy_sequence_read_stream.h"
-#include "mutable_array_sequence.h"
+#include "../include/lazy/lazy_sequence.h"
+#include "../include/stream/lazy_sequence_read_stream.h"
+#include "../include/sequence/mutable_array_sequence.h"
 #include "online_statistics.h"
-#include "sequence_read_stream.h"
+#include "../include/stream/sequence_read_stream.h"
 
 // Проверяет вычисление основных статистических характеристик
 TEST(OnlineStatisticsTests, CalculatesKnownStatistics)

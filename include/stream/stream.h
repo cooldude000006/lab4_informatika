@@ -4,7 +4,7 @@
 #include <limits>
 #include <string>
 
-#include "exceptions.h"
+#include "../exceptions.h"
 
 namespace lab4
 {

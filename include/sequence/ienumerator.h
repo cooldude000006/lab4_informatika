@@ -1,5 +1,5 @@
 #pragma once
-#include "option.h"
+#include "../option.h"
 
 namespace lab4
 {

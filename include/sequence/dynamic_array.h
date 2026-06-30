@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <limits>
 
-#include "exceptions.h"
+#include "../exceptions.h"
 
 namespace lab4
 {

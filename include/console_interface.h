@@ -4,8 +4,8 @@
 #include <string>
 
 #include "online_statistics.h"
-#include "read_only_stream.h"
-#include "sequence.h"
+#include "stream/read_only_stream.h"
+#include "sequence/sequence.h"
 
 namespace lab4
 {

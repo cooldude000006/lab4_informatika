@@ -1,6 +1,6 @@
 #pragma once
 
-#include "igenerator.h"
+#include "../igenerator.h"
 
 namespace lab4
 {

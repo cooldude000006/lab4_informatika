@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <limits>
 
-#include "lazy_sequence.h"
+#include "../lazy/lazy_sequence.h"
 #include "read_only_stream.h"
 
 namespace lab4
