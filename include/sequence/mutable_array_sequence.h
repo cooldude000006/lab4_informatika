@@ -1,4 +1,6 @@
 #pragma once
+
+#include "../exceptions.h"
 #include "sequence.h"
 #include "dynamic_array.h"
 #include "array_enumerator.h"

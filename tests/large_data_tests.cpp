@@ -47,7 +47,7 @@ TEST(LargeDataTests, LazySequenceMaterializesLargeRequestedPrefix)
 // Проверяет статистику для ста тысяч элементов бесконечного потока
 TEST(LargeDataTests, OnlineStatisticsProcessesLargeInfiniteStream)
 {
-    constexpr std::size_t element_count = 100'000;
+    constexpr std::size_t element_count = 1'000'000;
 
     lab4::ArithmeticProgressionGenerator<double> generator(1.0, 1.0);
     lab4::LazySequence<double> sequence(generator, lab4::Cardinal::Infinity());

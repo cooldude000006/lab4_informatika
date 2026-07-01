@@ -2,6 +2,7 @@
 
 #include <cstddef>
 
+#include "../exceptions.h"
 #include "../sequence/mutable_array_sequence.h"
 #include "write_only_stream.h"
 
@@ -28,11 +29,10 @@ namespace lab4
         {
             this->EnsureOpen("SequenceWriteStream::Write");
 
-            sequence_->Append(item);
-
             std::size_t next_position =
                 this->GetNextPosition("SequenceWriteStream::Write");
 
+            sequence_->Append(item);
             this->SetPosition(next_position);
 
             return next_position;

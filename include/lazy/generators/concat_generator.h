@@ -124,14 +124,16 @@ namespace lab4
         {
             if (first_ != nullptr && first_->HasNext())
             {
+                T result = first_->GetNext();
                 ++produced_count_;
-                return first_->GetNext();
+                return result;
             }
 
             if (second_ != nullptr && second_->HasNext())
             {
+                T result = second_->GetNext();
                 ++produced_count_;
-                return second_->GetNext();
+                return result;
             }
 
             throw IndexOutOfRangeException(

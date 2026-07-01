@@ -77,6 +77,9 @@ add_executable(laba_4_tests
         tests/lazy_sequence_operations_tests.cpp
         tests/stream_tests.cpp
         tests/large_data_tests.cpp
+        tests/lazy_sequence_edge_tests.cpp
+        tests/stream_edge_tests.cpp
+        tests/online_statistics_edge_tests.cpp
 )
 
 target_link_libraries(laba_4_tests PRIVATE

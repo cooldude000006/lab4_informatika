@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <limits>
 
+#include "../cardinal.h"
+#include "../exceptions.h"
 #include "../lazy/lazy_sequence.h"
 #include "read_only_stream.h"
 

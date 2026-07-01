@@ -2,6 +2,7 @@
 
 #include <cstddef>
 
+#include "../exceptions.h"
 #include "read_only_stream.h"
 #include "../sequence/sequence.h"
 

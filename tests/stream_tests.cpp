@@ -1,5 +1,3 @@
-#include <cstddef>
-
 #include <gtest/gtest.h>
 
 #include "../include/lazy/generators/arithmetic_progression_generator.h"

@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <memory>
 
 #include <gtest/gtest.h>
@@ -7,7 +6,6 @@
 #include "exceptions.h"
 #include "../include/sequence/ienumerator.h"
 #include "../include/lazy/lazy_sequence.h"
-#include "option.h"
 
 // Проверяет параметры пустой ленивой последовательности
 TEST(LazySequenceBasicTests, EmptySequenceIsFiniteAndHasZeroLength)
